@@ -8,26 +8,49 @@ function App() {
   const textRef = useRef("");
   const [total, setTotal] = useState(0);
   const [isSum, setIsSum] = useState(false);
-  const findSum = () => {
-    if (textRef.current.value === "") {
+  const add = () => {
+    let sum = 0;
+    let delimeter = ",";
+    let str = textRef.current.value;
+    if (str === "") {
       setIsSum(true);
       setTotal(0);
     } else {
-      let arr = textRef.current.value.split(",");
-      let sum = 0;
-      arr.forEach((a) => {
-        sum += Number(a);
-      });
-      setIsSum(true);
-      setTotal(sum);
+      if (str.includes("//")) {
+        delimeter = str[2];
+        let arr = str
+          .split("//")[1]
+          .split("\\n")
+          .join(delimeter)
+          .split(delimeter);
+        console.log(delimeter, arr);
+        arr.forEach((a) => {
+          sum += Number(a);
+        });
+        setIsSum(true);
+        setTotal(sum);
+      } else {
+        let arr = str.split("\\n").join(delimeter).split(delimeter);
+        arr.forEach((a) => {
+          sum += Number(a);
+        });
+        setIsSum(true);
+        setTotal(sum);
+      }
     }
   };
   return (
     <div className="App">
       <h1>Find Sum With String!</h1>
       <h3>
-        Please enter a string comma-separated to find the sum, Example - 3,5,7
+        Please enter a string comma-separated to find the sum, For Example -
+        3,5,7
       </h3>
+      <h4>
+        If you want to write custom delimeter, the beginning of the string will
+        contain a separate line that looks like this: //[delimeter]\n[numbers].
+        For Example - //;\n3;5;7
+      </h4>
       <Box
         component="form"
         sx={{ "& > :not(style)": { m: 1, width: "35ch" } }}
@@ -41,7 +64,7 @@ function App() {
           variant="outlined"
         />
       </Box>
-      <Button variant="contained" onClick={findSum}>
+      <Button variant="contained" onClick={add}>
         CALCULATE
       </Button>
       {isSum ? <h2>The Sum Is : {total}</h2> : ""}
